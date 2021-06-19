@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc_testing/counterBloc.dart';
 
@@ -27,8 +28,8 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
 
-  int _counter = 0;
   final counterBloc = CounterBloc();
+
 
   @override
   void initState() {
@@ -37,45 +38,72 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   void dispose() {
+    counterBloc.dispose();
     super.dispose();
   }
 
-  void _incrementCounter() {
-    /*setState(() {
-      _counter++;
-    });*/
-    _counter++;
-    counterBloc.counterSink.add(_counter);
-  }
+
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Flutter Anik Dev'),
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            StreamBuilder(
-              stream: counterBloc.counterStream,
-              initialData: 0,
-              builder: (BuildContext context, AsyncSnapshot<int> snapshot)
-              {
-                return new Text(
-                  'Counter : ${snapshot.data}',
-                  style: Theme.of(context).textTheme.headline4,
-                );
-              },
-            ),
-          ],
+    return SafeArea(
+      top: true,
+      bottom: true,
+      left: true,
+      right: true,
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text('Flutter Anik Dev'),
         ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: _incrementCounter,
-        tooltip: 'Increment',
-        child: Icon(Icons.add),
+        body: Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              StreamBuilder(
+                stream: counterBloc.counterStream,
+                initialData: 0,
+                builder: (context,snapshot)
+                {
+                  return new Text(
+                    'Counter : ${snapshot.data}',
+                    style: Theme.of(context).textTheme.headline4,
+                  );
+                },
+              ),
+            ],
+          ),
+        ),
+        floatingActionButton: Padding(
+          padding: const EdgeInsets.all(4.0),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+            children: [
+              FloatingActionButton(
+                onPressed: (){
+                  counterBloc.eventCounterSink.add(counterAction.Increment);
+                },
+                tooltip: 'Increment',
+                child: Icon(Icons.add),
+              ),
+
+              FloatingActionButton(
+                onPressed: (){
+                  counterBloc.eventCounterSink.add(counterAction.Decrement);
+                },
+                tooltip: 'Decrement',
+                child: Icon(Icons.remove),
+              ),
+
+              FloatingActionButton(
+                onPressed: (){
+                  counterBloc.eventCounterSink.add(counterAction.Clear);
+                },
+                tooltip: 'Clear',
+                child: Icon(Icons.clear),
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
